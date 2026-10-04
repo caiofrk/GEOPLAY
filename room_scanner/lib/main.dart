@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:ui';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 
 List<CameraDescription> cameras = [];
 
@@ -127,9 +129,7 @@ class _CameraScreenState extends State<CameraScreen> with SingleTickerProviderSt
               ),
               onPressed: () {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Mock Uploading...'))
-                );
+                _uploadFile(filePath);
               },
               child: const Text('Send to Local PC', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
             )
@@ -137,6 +137,28 @@ class _CameraScreenState extends State<CameraScreen> with SingleTickerProviderSt
         ),
       ),
     );
+  }
+
+  Future<void> _uploadFile(String filePath) async {
+    if (filePath == 'mock/path.mp4') {
+       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Mock upload ignored on emulator.')));
+       return;
+    }
+    
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Uploading scan to PC...')));
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse('http://192.168.0.3:8000/upload'));
+      request.files.add(await http.MultipartFile.fromPath('file', filePath));
+      var res = await request.send();
+      
+      if (res.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Upload successful!')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Upload failed: ${res.statusCode}')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 
   @override

@@ -11,8 +11,8 @@ We are building the "Room-to-Game MVP" pipeline which converts raw, locally proc
 - [x] **Local Server**: Built `receiver.py` (FastAPI) to handle incoming multi-part video/scan uploads in 1MB chunks to the local PC.
 - [x] **Data Hygiene**: Added `.gitignore` to prevent raw captures in `uploads/` from bloating the repository.
 - [x] **E2E Test**: Successfully recorded a mock video on Android and streamed it directly to the local PC `uploads/` folder.
+- [x] **Photogrammetry / Splatting Integration**: Created `reconstruction_pipeline.py` to orchestrate Nerfstudio (COLMAP + Splatfacto + Poisson meshing) to convert uploaded MP4s into a raw `.obj`.
 
 ### Pending Tasks (Next Steps)
-- [ ] **Photogrammetry / Splatting Integration**: Feed the uploaded MP4/JPEG data into a local Gaussian Splat or Photogrammetry generator (e.g., COLMAP) to create the raw `.obj`.
-- [ ] **Collision Generation**: Extend `blender_pipeline.py` to automatically detect the floor bounds and generate a static collision plane.
-- [ ] **Game Engine Integration**: Import the baked `.glb` into Godot or Unreal Engine and set up a basic first-person character controller to walk around the room.
+- [x] **Collision Generation**: Extended `blender_pipeline.py` to automatically detect the floor bounds and generate a static collision plane (`-colonly`).
+- [x] **Game Engine Integration**: Created the `godot_project/` directory with `project.godot`, `main.tscn`, and a `player.gd` script for basic first-person character movement to walk around the imported `.glb`.

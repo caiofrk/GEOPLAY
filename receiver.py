@@ -32,6 +32,6 @@ async def upload_scan(file: UploadFile = File(...)):
     return {"status": "success", "filename": file.filename, "message": "File received and saved locally."}
 
 if __name__ == "__main__":
-    print(f"\n🚀 Starting Local Receiver Server on http://{HOST}:{PORT}")
+    print(f"\nStarting Local Receiver Server on http://{HOST}:{PORT}")
     print(f"Make sure your phone is on the same Wi-Fi network and sends POST requests to http://<YOUR_PC_IP>:{PORT}/upload\n")
     uvicorn.run(app, host=HOST, port=PORT)

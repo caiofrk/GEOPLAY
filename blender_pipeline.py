@@ -1,6 +1,7 @@
 import bpy
 import sys
 import os
+import mathutils
 
 # Configuration
 input_file = "C:/path/to/raw_splat2mesh.obj"
@@ -68,10 +69,32 @@ bpy.context.scene.render.bake.margin = 16
 print("Starting OptiX Bake. This may take a moment...")
 bpy.ops.object.bake(type='DIFFUSE', save_mode='EXTERNAL')
 
-# 9. Pack texture and export to Game Engine format (.glb)
+# 9. Generate Floor Collision Plane
+print("Generating static floor collision plane...")
+bbox_corners = [low_poly.matrix_world @ mathutils.Vector(corner) for corner in low_poly.bound_box]
+min_x = min([c.x for c in bbox_corners])
+max_x = max([c.x for c in bbox_corners])
+min_y = min([c.y for c in bbox_corners])
+max_y = max([c.y for c in bbox_corners])
+min_z = min([c.z for c in bbox_corners])
+
+center_x = (min_x + max_x) / 2.0
+center_y = (min_y + max_y) / 2.0
+size_x = max_x - min_x
+size_y = max_y - min_y
+
+# Create plane slightly above the absolute lowest point to prevent clipping
+bpy.ops.mesh.primitive_plane_add(size=1, enter_editmode=False, align='WORLD', location=(center_x, center_y, min_z + 0.05))
+floor_col = bpy.context.active_object
+# '-colonly' suffix is automatically parsed by Godot as an invisible static collision body
+floor_col.name = "Floor-colonly"
+floor_col.scale = (size_x, size_y, 1)
+
+# 10. Pack texture and export to Game Engine format (.glb)
 img.pack()
 bpy.ops.object.select_all(action='DESELECT')
 low_poly.select_set(True)
+floor_col.select_set(True)
 
 bpy.ops.export_scene.gltf(
     filepath=output_file,

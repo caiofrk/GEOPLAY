@@ -147,7 +147,7 @@ class _CameraScreenState extends State<CameraScreen> with SingleTickerProviderSt
     
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Uploading scan to PC...')));
     try {
-      var request = http.MultipartRequest('POST', Uri.parse('http://192.168.0.3:8000/upload'));
+      var request = http.MultipartRequest('POST', Uri.parse('http://192.168.0.2:8000/upload'));
       request.files.add(await http.MultipartFile.fromPath('file', filePath));
       var res = await request.send();
       

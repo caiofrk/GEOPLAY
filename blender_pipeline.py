@@ -4,7 +4,7 @@ import os
 import mathutils
 
 # Configuration
-input_file = "C:/path/to/raw_splat2mesh.obj"
+input_file = "C:/path/to/GEOPLAY/processing_out/mesh.obj"
 output_file = "C:/path/to/game_ready_room.glb"
 decimation_ratio = 0.1  # Reduces polycount by 90%
 texture_size = 4096     # 4K texture for environment detail
